@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/vashish1/InterviewPortal/api"
 )
@@ -24,7 +25,10 @@ func main() {
 		port = "8000"
 	}
 	r = mux.NewRouter()
+	headers := handlers.AllowedHeaders([]string{"Accept", "Content-Type", "Content-Length", "Accept-Encoding", "X-CSRF-Token", "Authorization"})
+	methods := handlers.AllowedMethods([]string{"POST", "GET", "PUT", "DELETE"})
+	origins := handlers.AllowedOrigins([]string{"*"})
 	setuproutes()
-	http.Handle("/", r)
+	http.Handle("/", handlers.CORS(headers, methods, origins)(r))
 	http.ListenAndServe(":"+port, nil)
 }

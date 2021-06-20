@@ -50,7 +50,7 @@ func AddInterview(w http.ResponseWriter, r *http.Request) {
 		ok := database.CheckAvailability(user, start, end)
 		if !ok {
 			res.Success = false
-			res.Error = user.Name + "is not availabe on required time slot"
+			res.Error = user.Name + " is not availabe on required time slot"
 			SendResponse(w, res, http.StatusNotAcceptable)
 			return
 		}
