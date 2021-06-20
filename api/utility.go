@@ -11,9 +11,11 @@ import (
 	mailjet "github.com/mailjet/mailjet-apiv3-go"
 )
 
+//Key pass values to send email
 var key = os.Getenv("SMTP_KEY")
 var pass = os.Getenv("SMTP_PASS")
 
+//SendResponse is use to send the given data as a response
 func SendResponse(w http.ResponseWriter, data interface{}, code int) {
 	b, _ := json.Marshal(data)
 	w.WriteHeader(code)
@@ -21,6 +23,7 @@ func SendResponse(w http.ResponseWriter, data interface{}, code int) {
 	return
 }
 
+//Generates the unique ID for interview
 func generateID() int {
 	rand.Seed(time.Now().UnixNano())
 	min := 1
@@ -35,6 +38,7 @@ var from = &mailjet.RecipientV31{
 
 var client = mailjet.NewMailjetClient(key, pass)
 
+//SendEmail function is used to send notification Email
 func SendEmail(RecipientEmail string, RecipientName string, Body string) bool {
 	messagesInfo := []mailjet.InfoMessagesV31{
 		mailjet.InfoMessagesV31{

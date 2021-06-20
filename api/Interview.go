@@ -11,6 +11,7 @@ import (
 	"github.com/vashish1/InterviewPortal/pkg/models"
 )
 
+//input is local data type used to save interview details
 type input struct {
 	ID           int           `json:"id,omitempty"`
 	StartTime    string        `json:"starttime,omitempty"`
@@ -18,6 +19,7 @@ type input struct {
 	Participants []models.User `json:"participants,omitempty"`
 }
 
+// AddInterview takes the request body and then validates and adds to db
 func AddInterview(w http.ResponseWriter, r *http.Request) {
 	var data input
 	var res models.Response
@@ -36,14 +38,18 @@ func AddInterview(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//Parsing the time that is provided as a string input
 	start, _ := time.Parse("2006-01-02T15:04:00Z", data.StartTime)
 	end, _ := time.Parse("2006-01-02T15:04:00Z", data.EndTime)
+
+	//verification of time requested for interview
 	if start.Before(time.Now()) && end.After(time.Now()) {
 		res.Success = false
 		res.Error = "Interview cannot be scheduled for past time"
 		SendResponse(w, res, http.StatusBadRequest)
 		return
 	}
+
 	for _, user := range data.Participants {
 		ok := database.CheckAvailability(user, start, end)
 		if !ok {
@@ -59,6 +65,7 @@ func AddInterview(w http.ResponseWriter, r *http.Request) {
 		EndTime:      end,
 		Participants: data.Participants,
 	}
+	//Insert the data into DB
 	if ok, err := database.InsertInterviewDetails(Interviewdata); !ok {
 		res.Success = false
 		res.Error = err.Error()
@@ -76,6 +83,7 @@ func AddInterview(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+//EditInterview is api that is used to edit the interviws that are scheduled
 func EditInterview(w http.ResponseWriter, r *http.Request) {
 	var data input
 	var res models.Response
@@ -107,6 +115,7 @@ func EditInterview(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+//GetInterview fetches the list of interviews
 func GetInterviewList(w http.ResponseWriter, r *http.Request) {
 	var res models.Response
 	ok, List := database.GetInterviews()

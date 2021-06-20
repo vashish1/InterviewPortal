@@ -9,6 +9,7 @@ import (
 	"github.com/vashish1/InterviewPortal/pkg/models"
 )
 
+//Add user is used to add the user to the database
 func AddUser(w http.ResponseWriter, r *http.Request) {
 	var data models.User
 	var res models.Response
@@ -34,6 +35,7 @@ func AddUser(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
+//fetches the list of users
 func GetUsers(w http.ResponseWriter, r *http.Request) {
 	var res models.Response
 	ok, usersList := database.GetUserData()
