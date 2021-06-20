@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -11,9 +12,9 @@ import (
 )
 
 type input struct {
-	Id           int           `json:"id,omitempty"`
-	StartTime    string        `json:"start_time,omitempty"`
-	EndTime      string        `json:"end_time,omitempty"`
+	ID           int           `json:"id,omitempty"`
+	StartTime    string        `json:"starttime,omitempty"`
+	EndTime      string        `json:"endtime,omitempty"`
 	Participants []models.User `json:"participants,omitempty"`
 }
 
@@ -65,6 +66,12 @@ func AddInterview(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	res.Success = true
+	for _,user:=range data.Participants{
+		ok:=SendEmail(user.Email,user.Name,"interview")
+		if !ok{
+			fmt.Println("email not sent")
+		}
+	}
 	SendResponse(w, res, http.StatusOK)
 	return
 }
@@ -83,7 +90,7 @@ func EditInterview(w http.ResponseWriter, r *http.Request) {
 	start, err := time.Parse("2006-01-02T15:04:00Z", data.StartTime)
 	end, err := time.Parse("2006-01-02T15:04:00Z", data.EndTime)
 	Interviewdata := models.Interview{
-		ID:           data.Id,
+		ID:           data.ID,
 		StartTime:    start,
 		EndTime:      end,
 		Participants: data.Participants,

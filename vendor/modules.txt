@@ -36,6 +36,11 @@ github.com/klauspost/compress/huff0
 github.com/klauspost/compress/snappy
 github.com/klauspost/compress/zstd
 github.com/klauspost/compress/zstd/internal/xxhash
+# github.com/mailjet/mailjet-apiv3-go v0.0.0-20201009050126-c24bc15a9394
+## explicit
+github.com/mailjet/mailjet-apiv3-go
+github.com/mailjet/mailjet-apiv3-go/fixtures
+github.com/mailjet/mailjet-apiv3-go/resources
 # github.com/pkg/errors v0.9.1
 github.com/pkg/errors
 # github.com/xdg-go/pbkdf2 v1.0.0

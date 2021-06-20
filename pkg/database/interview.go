@@ -91,8 +91,8 @@ func UpdateInterview(data models.Interview) (bool, error) {
 	update := bson.D{
 		{
 			"$set", bson.D{
-				{"start_time", data.StartTime},
-				{"end_time", data.EndTime},
+				{"starttime", data.StartTime},
+				{"endtime", data.EndTime},
 				{"participants", data.Participants},
 			},
 		},
