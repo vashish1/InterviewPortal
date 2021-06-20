@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -36,10 +35,8 @@ func AddInterview(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	start, err := time.Parse("2006-01-02T15:04:00Z", data.StartTime)
-	fmt.Println(err)
-	end, err := time.Parse("2006-01-02T15:04:00Z", data.EndTime)
-	fmt.Println(err)
+	start, _ := time.Parse("2006-01-02T15:04:00Z", data.StartTime)
+	end, _ := time.Parse("2006-01-02T15:04:00Z", data.EndTime)
 	if start.Before(time.Now()) && end.After(time.Now()) {
 		res.Success = false
 		res.Error = "Interview cannot be scheduled for past time"
@@ -56,6 +53,7 @@ func AddInterview(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	Interviewdata := models.Interview{
+		ID: generateID(),
 		StartTime:    start,
 		EndTime:      end,
 		Participants: data.Participants,
@@ -83,9 +81,9 @@ func EditInterview(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	start, err := time.Parse("2006-01-02T15:04:00Z", data.StartTime)
-	fmt.Println(err)
 	end, err := time.Parse("2006-01-02T15:04:00Z", data.EndTime)
 	Interviewdata := models.Interview{
+		ID:           data.Id,
 		StartTime:    start,
 		EndTime:      end,
 		Participants: data.Participants,
