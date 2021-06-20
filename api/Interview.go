@@ -39,8 +39,8 @@ func AddInterview(w http.ResponseWriter, r *http.Request) {
 	}
 
 	//Parsing the time that is provided as a string input
-	start, _ := time.Parse("2006-01-02T15:04:00Z", data.StartTime)
-	end, _ := time.Parse("2006-01-02T15:04:00Z", data.EndTime)
+	start, _ := time.Parse("2006-01-02T15:04", data.StartTime)
+	end, _ := time.Parse("2006-01-02T15:04", data.EndTime)
 
 	//verification of time requested for interview
 	if start.Before(time.Now()) && end.After(time.Now()) {
@@ -95,8 +95,8 @@ func EditInterview(w http.ResponseWriter, r *http.Request) {
 		SendResponse(w, res, http.StatusBadRequest)
 		return
 	}
-	start, err := time.Parse("2006-01-02T15:04:00Z", data.StartTime)
-	end, err := time.Parse("2006-01-02T15:04:00Z", data.EndTime)
+	start, err := time.Parse("2006-01-02T15:04", data.StartTime)
+	end, err := time.Parse("2006-01-02T15:04", data.EndTime)
 	Interviewdata := models.Interview{
 		ID:           data.ID,
 		StartTime:    start,
