@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gorilla/mux"
 	"github.com/vashish1/InterviewPortal/pkg/database"
 	"github.com/vashish1/InterviewPortal/pkg/models"
 )
@@ -79,6 +80,7 @@ func AddInterview(w http.ResponseWriter, r *http.Request) {
 			fmt.Println("email not sent")
 		}
 	}
+
 	SendResponse(w, res, http.StatusOK)
 	return
 }
@@ -128,5 +130,23 @@ func GetInterviewList(w http.ResponseWriter, r *http.Request) {
 	res.Success = false
 	res.Error = "Error while fetching list"
 	SendResponse(w, res, http.StatusInternalServerError)
+	return
+}
+
+func GetInterviewDetails(w http.ResponseWriter,r *http.Request){
+   param:=mux.Vars(r)
+   email:=param["email"]
+   var res models.Response
+   err,data:=database.GetData(email)
+   
+   if err!=nil{
+	res.Success = false
+	res.Error=err.Error()
+	SendResponse(w, res, http.StatusBadRequest)
+	return
+   }
+   res.Success = true
+	res.Data = data
+	SendResponse(w, res, http.StatusOK)
 	return
 }

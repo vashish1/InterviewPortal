@@ -59,7 +59,7 @@ func CheckAvailability(u models.User, start, end time.Time) bool {
 	}
 	err := db.FindOne(ctx, filter)
 	if err.Err() != nil {
-		fmt.Println(err.Err().Error())
+		// fmt.Println(err.Err().Error())
 		return true
 	}
 	return false
@@ -77,6 +77,7 @@ func InsertInterviewDetails(data models.Interview) (bool, error) {
 }
 
 func UpdateInterview(data models.Interview) (bool, error) {
+
 	if data.StartTime.Before(time.Now()) && data.EndTime.After(time.Now()) {
 		return false, errors.New("Interview cannot be scheduled for past time")
 	}
@@ -102,4 +103,36 @@ func UpdateInterview(data models.Interview) (bool, error) {
 		return false, result.Err()
 	}
 	return true, nil
+}
+
+func GetData(email string) (error,[]models.Interview){
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+	defer cancel()
+	filter:=bson.D{
+		{"participants", bson.D{
+			{"email", email},
+		}},
+	}
+	var result []models.Interview
+	cur, err := db.Find(ctx, filter, options.Find())
+
+	if err != nil {
+		fmt.Println("Error while finding User", err)
+		return err, []models.Interview{}
+	}
+	for cur.Next(context.TODO()) {
+		var elem models.Interview
+		err := cur.Decode(&elem)
+		if err != nil {
+			fmt.Println("Error while decoding user:", err)
+			return err, []models.Interview{}
+		}
+		result = append(result, elem)
+	}
+	if err := cur.Err(); err != nil {
+		fmt.Println("Error in cursor :", err)
+	}
+
+	cur.Close(context.TODO())
+	return nil, result
 }
