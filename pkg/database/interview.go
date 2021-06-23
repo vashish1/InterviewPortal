@@ -109,12 +109,10 @@ func GetData(email string) (error,[]models.Interview){
 	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	defer cancel()
 	filter:=bson.D{
-		{"participants", bson.D{
-			{"email", email},
-		}},
-	}
+		{"participants.email", email},}
 	var result []models.Interview
-	cur, err := db.Find(ctx, filter, options.Find())
+
+	cur, err := db.Find(ctx,filter,options.Find())
 
 	if err != nil {
 		fmt.Println("Error while finding User", err)
@@ -123,16 +121,18 @@ func GetData(email string) (error,[]models.Interview){
 	for cur.Next(context.TODO()) {
 		var elem models.Interview
 		err := cur.Decode(&elem)
+
 		if err != nil {
 			fmt.Println("Error while decoding user:", err)
 			return err, []models.Interview{}
 		}
+		fmt.Println(elem)
 		result = append(result, elem)
 	}
 	if err := cur.Err(); err != nil {
 		fmt.Println("Error in cursor :", err)
 	}
-
+   
 	cur.Close(context.TODO())
 	return nil, result
 }

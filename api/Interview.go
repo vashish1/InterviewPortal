@@ -136,6 +136,7 @@ func GetInterviewList(w http.ResponseWriter, r *http.Request) {
 func GetInterviewDetails(w http.ResponseWriter,r *http.Request){
    param:=mux.Vars(r)
    email:=param["email"]
+   fmt.Println(email)
    var res models.Response
    err,data:=database.GetData(email)
    
